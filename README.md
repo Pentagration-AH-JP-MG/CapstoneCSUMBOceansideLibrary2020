@@ -1,6 +1,8 @@
 # CapstoneCSUMBOceansideLibrary2020
 Implementation of web-based pick/check-out system integrated with Sierra DNA and SIP protocol
 
+Note: We used JetBrains IntelliJ IDEA as the IDE for this project https://www.jetbrains.com/idea/
+
 ***
 
 Licensed under Apache License, Version 2.0 https://opensource.org/licenses/Apache-2.0 as of 10-October-2020.
