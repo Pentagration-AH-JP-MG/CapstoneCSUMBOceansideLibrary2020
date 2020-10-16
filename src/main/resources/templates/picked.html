@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/1.2.0/css/searchPanes.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.4/css/buttons.dataTables.min.css">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/searchpanes/1.2.0/js/dataTables.searchPanes.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.4/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.print.min.js"></script>
+
+    <!-- file specific CSS -->
+    <style>
+        .btn {
+            border: 1px solid black;
+            background-color: red;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+
+    <title>Picked Holds</title>
+</head>
+
+<body>
+<div class="container">
+    <br>
+    <img src="../static/images/opl3.png" th:src="@{/images/opl3.png}"/><br><br>
+    <h2>Items On Cart</h2><br>
+    <a href="/" class="btn" style="background-color: gold; color: black; font-weight: normal"><< Back to Hold List</a><br><br>
+
+    <!-- display responsive is used by bootstrap, default # of items per page is 25 -->
+    <table id="hold-table" class="display responsive" data-page-length="25" style="width:100%">
+        <thead>
+        <tr>
+            <!--  All of the headers are needed for the DataTables feature to work appropriately,-->
+            <!--  even though we're hiding some.  We need the data in order to pass to the ajax -->
+            <!--  calls for API usage.-->
+            <!-- col 0 --><th>Branch Name</th>
+            <!-- col 1 --><th class="none">Hold ID</th>
+            <!-- col 2 --><th class="none">Fill Location</th>
+            <!-- col 3 --><th class="none">Pickup Location</th>
+            <!-- col 4 --><th>Title</th>
+            <!-- col 5 --><th>Barcode</th>
+            <!-- col 6 --><th class="none">First Name</th>
+            <!-- col 7 --><th class="none">Last Name</th>
+            <!-- col 8 --><th class="none">Address</th>
+            <!-- col 9 --><th class="none">Gate Code</th>
+            <!-- col 10 --><th class="none">Phone Number</th>
+            <!-- col 11 --><th class="none">District #</th>
+            <!-- col 12 --><th>Action Button</th>
+            <!-- col 13 --><th class="none">recordNum</th>
+            <!-- col 14 --><th class="none">partonBarcode</th>
+            <!-- col 15 --><th class="none">fullName</th>
+            <!-- col 16 --><th class="none">pickupLocationBranch</th>
+        </tr>
+
+        </thead>
+        <tbody>
+        <tr th:each="picked, holdStat : ${holdList}">
+            <!-- col 0 --><td th:text="${picked.branchName}" class = branchName></td>
+            <!-- col 1 --><td th:text="${picked.holdID}" class = holdID></td>
+            <!-- col 2 --><td th:text="${picked.fillLocation}" class = fillLocation></td>
+            <!-- col 3 --><td th:text="${picked.pickupLocation}" class = pickupLocation></td>
+            <!-- col 4 --><td th:text="${picked.title}" class = title></td>
+            <!-- col 5 --><td th:text="${picked.barcode}" class = barcode></td>
+            <!-- col 6 --><td th:text="${picked.fName}" class = fName></td>
+            <!-- col 7 --><td th:text="${picked.lName}" class = lName></td>
+            <!-- col 8 --><td th:text="${picked.address}" class = address></td>
+            <!-- col 9 --><td th:text="${picked.gateCode}" class = gateCode></td>
+            <!-- col 10 --><td th:text="${picked.phone}" class = phone></td>
+            <!-- col 11 --><td th:text="${picked.pcode2}" class = pcode2></td>
+            <!-- col 12 -->
+            <td><div class="btn-group">
+                <button id="itemInfo" class="btn itemInfo" style="background-color: red">Route Pending</button>
+            </div>
+            </td>
+            <!-- col 13 --><td th:text="${picked.recordNum}" class = recordNum></td>
+            <!-- col 14 --><td th:text="${picked.patronBarcode}" class = patronBarcode></td>
+            <!-- col 15 --><td th:text="${picked.fullName}" class = fullName></td>
+            <!-- col 16 --><td th:text="${picked.pickupLocationBranch}" class = pickupLocationBranch></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</div>
+<!-- end container -->
+
+<!-- Footer -->
+<br><br>
+<footer class="py-5">
+    <div class="container">
+        <p class="m-0 text-center">CSUMB CST 499 Capstone Project Copyright &copy; 2020 Gonzalez, Houser, Pettit</p>
+        <p class="m-0 text-center"><b>Disclaimer:</b> The information on this webpage is fictitious. It is used for academic purposes only.</p>
+    </div>
+</footer>
+
+<script th:inline = "javascript" type="text/javascript">
+
+    // holder for token variable so we can use it everywhere
+    var token;
+
+    $(document).ready(function(){
+
+    //START DATATABLES CONFIGURATION
+
+        //Bootstrap DataTable Configuration Information
+        //Datatables documentation available at https://datatables.net/
+        $('#hold-table').DataTable({
+            //responsive enables the collapsed item view documentation: https://datatables.net/extensions/responsive/
+            "responsive": true,
+
+            //present datatables searchPanes and csv through a button
+            //documentation: https://datatables.net/extensions/searchpanes/examples/initialisation/bs3Button.html
+            "buttons":[
+                {extend:'searchPanes', config:{cascadePanes:true}},
+
+                //csv export configuration columns[n,...,n+x] controls what columns are exported
+                //exported rows are filtered by the applied searchPanes or search
+                {extend:'csv', text:'Export search to CSV', exportOptions:{columns:[15,8,9,10], rows:{search:'applied'}}}
+                ],
+            "dom": 'Bfrtip',
+
+            //stateSave: will save the state of the criteria selected in the searchPane in the browsers cache
+            //documenation:https://datatables.net/reference/option/stateSave
+            "stateSave": true,
+
+            "columnDefs": [
+                //searchpanes configuration documenation:https://datatables.net/extensions/searchpanes/
+                //show these columns as a searchpane
+                {"searchPanes": {"show": true}, "targets": [0,3,11]},
+
+                //do not show these columns as a searchpane
+                {"searchPanes": {"show": false}, "targets": [1,2,4,5,6,7,8,9,10,12,13,14,15,16]},
+
+                //default sort order for the table 0 = branchName, 3= pickupLocation
+                {"orderData": [0,3], "targets": 0},
+
+                //disable the sort arrows in the column header for column 12 = itemInfo
+                {"orderable": false, "targets": [12]},
+
+                //datatables responsive feature configuration
+                //documentation https://datatables.net/extensions/responsive/
+                //set the priority of the status/buttons column to 1, this prevents the column from being hidden
+                {"responsivePriority": 1, "targets": 12},
+
+                //set the priority of the other key columns to 2 to keep them visible
+                {"responsivePriority": 2, "targets" : [0,1,2]},
+
+                //datatables search box configuration for most columns documentation:https://datatables.net/reference/api/search()
+                //disable search for columns 4-10
+                {"targets":[4], "visible": true, "searchable": false},//column #, visibility, not searched from the search box
+                {"targets":[5], "visible": true, "searchable": false},
+                {"targets":[6], "visible": true, "searchable": false},
+                {"targets":[7], "visible": true, "searchable": false},
+                {"targets":[8], "visible": true, "searchable": false},
+                {"targets":[9], "visible": true, "searchable": false},
+                {"targets":[10], "visible": true, "searchable": false},
+                {"targets":[13], "visible": true, "searchable": false},
+                {"targets":[14], "visible": true, "searchable": false},
+                {"targets":[15], "visible": true, "searchable": false},
+                {"targets":[16], "visible": true, "searchable": false},
+
+                //make the button column and the hold type columns wide enough to be visible
+                {"width": "25%", "targets": 12},
+            ]
+        });
+
+    //END DATATABLES CONFIGURATION
+
+        //Set the initial values of the Action Button
+        if ($('#itemInfo').closest('td').siblings('td.pickupLocation').text() == 'd'){
+            $('#itemInfo').html("Delivery");
+        }
+        else if ($('#itemInfo').closest('td').siblings('td.pickupLocation').text() == $('#itemInfo').closest('td').siblings('td.fillLocation').text()){
+            $('#itemInfo').html("Hold Shelf");
+        }
+        else {
+            $('#itemInfo').html("Transit");
+        }
+
+        //Print the label, checkout the item
+        $('#hold-table').on('click', '.itemInfo', function() {
+            // token for varfield update
+            getToken();
+
+            //label variables
+            let targetButton = event.target;
+            let labelFirst = $(targetButton).closest('td').siblings('td.fName').text();
+            let labelFirstInitial = labelFirst.charAt(0);
+            let labelLast = $(targetButton).closest('td').siblings('td.lName').text();
+            let labelAddress = $(targetButton).closest('td').siblings('td.address').text();
+            let labelPhone = $(targetButton).closest('td').siblings('td.phone').text();
+            let labelPhoneAreaCode = "(" + labelPhone.charAt(0) + labelPhone.charAt(1) + labelPhone.charAt(2) + ")";
+            let labelPhonePrefix = " " + labelPhone.charAt(3) + labelPhone.charAt(4) + labelPhone.charAt(5) + "-";
+            let labelPhoneSuffix = "" + labelPhone.charAt(6) + labelPhone.charAt(7) + labelPhone.charAt(8) + labelPhone.charAt(9);
+            let labelTransit = $(targetButton).closest('td').siblings('td.pickupLocation').text();
+            let labelTitle = $(targetButton).closest('td').siblings('td.title').text();
+            let labelPickupLocationBranch = $(targetButton).closest('td').siblings('td.pickupLocationBranch').text();
+
+            //set today's date
+            var month = new Date().getMonth();
+            var day = new Date().getDate();
+            var year = new Date().getFullYear();
+            var labelDate = (month+1) + "/" + day + "/" + year;
+
+            //set the holdType
+            var holdType;
+            if ($('#itemInfo').closest('td').siblings('td.pickupLocation').text() == 'd'){
+                holdType = "delivery";
+            }
+            else if ($('#itemInfo').closest('td').siblings('td.pickupLocation').text() == $('#itemInfo').closest('td').siblings('td.fillLocation').text()){
+                holdType = "hold";
+            }
+            else {
+                holdType = "transit";
+            }
+
+            //PRINT
+            //delivery label formatting
+            if (holdType == "delivery"){
+                let print = window.open();
+                print.document.write('DELIVERY <br>');
+                print.document.write('Name: ' + labelFirst + ' ' + labelLast + '<br>');
+                print.document.write('Address: ' + labelAddress + '<br>');
+                print.document.write('Phone: ' + labelPhoneAreaCode + labelPhonePrefix + labelPhoneSuffix + '<br>');
+                print.document.write('Title: ' + labelTitle + '<br>');
+                print.document.write('Fill Date: ' + labelDate + '<br>');
+                print.document.close();
+                //code to keep print dialog window open until print or cancel
+                setTimeout(function() {print.print();}, 500);
+                print.onfocus = function(){setTimeout(function() {print.close();}, 500);}
+            }
+            //hold shelf label formatting
+            else if (holdType == "hold"){
+                let print = window.open();
+                print.document.write('HOLD <br>');
+                print.document.write('Name:');
+                print.document.write('<h2>' + labelFirstInitial + '. ' + labelLast + '</h2>');
+                print.document.write('Title: ' + labelTitle + '<br>');
+                print.document.write('Fill date: ' + labelDate + '<br>');
+                print.document.close();
+                //code to keep print dialog window open until print or cancel
+                setTimeout(function() {print.print();}, 500);
+                print.onfocus = function(){setTimeout(function() {print.close();}, 500);}
+            }
+            //inter library transit label formatting
+            else {
+                let print = window.open();
+                print.document.write('TRANSIT <br>');
+                print.document.write('<h2>' + labelPickupLocationBranch + '</h2><br>');
+                print.document.write('Fill date: ' + labelDate + '<br>');
+                print.document.close();
+                //code to keep print dialog window open until print or cancel
+                setTimeout(function() {print.print();}, 500);
+                print.onfocus = function(){setTimeout(function() {print.close();}, 500);}
+            }
+            //END PRINT
+
+            // updating the itemVarfield to drop query from picked page
+            let recordNum = $(targetButton).closest('td').siblings('td.recordNum').text();
+            updateItemVarfield(token, recordNum, "null");
+
+            // if the holdType is delivery perform a checkout as well
+            if (holdType == "delivery") {
+                let barcode = $(targetButton).closest('td').siblings('td.barcode').text();
+                let patronBarcode = $(targetButton).closest('td').siblings('td.patronBarcode').text();
+
+                checkOut(barcode, patronBarcode);
+            }
+
+            // color button green to indicate the checkout is complete
+            // if something goes wrong the user can hit the button again to re-print the label
+            this.style.backgroundColor="#10d16c";
+            this.style.color = "white";
+            this.style.fontWeight = "bold";
+            targetButton.innerHTML= "Complete"
+        });
+
+        function getToken() {
+            // generate a token for API update
+            $.ajax({
+                method: "post",
+                url: "/token",
+                async: false,
+                success: function (data) {
+                    console.log("access token is " + data);
+                    token = data;
+                }
+            });
+        }
+
+        function updateItemVarfield(token, recordNum, holdID) {
+            console.log("updateItemStatus call");
+            console.log(token);
+            console.log(recordNum);
+            console.log(holdID);
+            $.ajax({
+                method: "get",
+                url: "/updateItemVarfield",
+                data: {
+                    "token": token,
+                    "recordNum": recordNum,
+                    "holdID": holdID
+                },
+                contentType: "application/json; charset=ytf-8",
+            });
+        }
+
+        function checkOut(barcode, patronBarcode){
+            $.ajax({
+                method: "post",
+                url: "/api/checkOut",
+                data: JSON.stringify({
+                    "itemBarcode":barcode,
+                    "patronBarcode":patronBarcode
+                }),
+                contentType: "application/json; charset=ytf-8",
+                success: function (data) {
+
+                    // for debugging purposes
+                    console.log(data.item);
+                    console.log(data.recordNum);
+
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

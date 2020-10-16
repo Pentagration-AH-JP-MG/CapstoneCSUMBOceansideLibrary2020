@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"content="width=device-width, initial-scale=1">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/1.2.0/css/searchPanes.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.4/css/buttons.dataTables.min.css">
+
+  <!-- JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/searchpanes/1.2.0/js/dataTables.searchPanes.min.js"></script>
+  <script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.6.4/js/dataTables.buttons.min.js"></script>
+
+  <!-- file specific CSS -->
+  <style>
+    .btn {
+      border: 1px solid black;
+      background-color: white;
+    }
+  </style>
+
+  <title>Holding List</title>
+</head>
+
+<body>
+
+<div class="container">
+  <br>
+  <img src="../static/images/opl3.png" th:src="@{/images/opl3.png}"/>
+  <h2>Holdings</h2><br>
+  <p><b>Default sorting is:</b> Location Name > Call Number > Title</p>
+  <a href="/picked" class="btn" style="background-color: gold">View Items On Cart >></a><br>
+  <br>
+
+
+  <!-- display responsive is used by bootstrap, default # of items per page is 25 -->
+  <table id="hold-table" class="display responsive" data-page-length="25" style="width:100%">
+    <thead>
+    <tr>
+      <!--  All of the headers are needed for the DataTables feature to work appropriately,-->
+      <!--  even though we're hiding some.  We need the data in order to pass to the ajax -->
+      <!--  calls for API usage.-->
+      <!-- col 0 --><th>Location Name</th>
+      <!-- col 1 --><th>Call Number</th>
+      <!-- col 2 --><th>Title</th>
+      <!-- col 3 --><th class="none">Hold ID</th>
+      <!-- col 4 --><th class="none">First Name</th>
+      <!-- col 5 --><th class="none">Last Name</th>
+      <!-- col 6 --><th class="none">Patron ID</th>
+      <!-- col 7 --><th class="none">Checked In Date</th>
+      <!-- col 8 --><th class="none">Hold Placed Date</th>
+      <!-- col 9 --><th class="none">Bib ID</th>
+      <!-- col 10 --><th>Hold Type</th>
+      <!-- col 11 --><th id="status">Status</th>
+      <!-- col 12 --><th class="none">Location Code</th>
+      <!-- col 13 --><th class="none">Pickup Location</th>
+      <!-- col 14 --><th class="none">Item ID</th>
+      <!-- col 15 --><th class="none">Branch Name</th>
+      <!-- col 16 --><th class="none">District #</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="hold, holdStat : ${holdList}">
+      <!-- col 0 --><td th:text="${hold.locationName}" class = locationName></td>
+      <!-- col 1 --><td th:text="${hold.callNumber}" class = callNumber></td>
+      <!-- col 2 --><td th:text="${hold.title}" class = title></td>
+      <!-- col 3 --><td th:text="${hold.holdID}" class = holdID></td>
+      <!-- col 4 --><td th:text="${hold.fName}" class = fName></td>
+      <!-- col 5 --> <td th:text="${hold.lName}" class = lName></td>
+      <!-- col 6 --> <td th:text="${hold.patronID}" class = patronID></td>
+      <!-- col 7 --> <td th:text="${hold.checkedInDate}" class = checkedInDate></td>
+      <!-- col 8 --> <td th:text="${hold.holdPlacedDate}" class = holdPlacedDate></td>
+      <!-- col 9 --> <td th:text="${hold.birlBib}" class = birlBib></td>
+      <!-- col 10 --> <td th:text="${hold.holdType}" class = holdType></td>
+      <!-- col 11 -->
+      <td><div>
+        <button id="onhold" class="btn onhold">Pick Item</button>
+        <button id="nos" class="btn NOS">NOS</button>
+      </div>
+      </td>
+      <!-- col 12 --><td th:text="${hold.fillLocation}" class = fillLocation></td>
+      <!-- col 13 --><td th:text="${hold.pickupLocation}" class = pickupLocation></td>
+      <!-- col 14 --><td th:text="${hold.itemID}" class = itemID></td>
+      <!-- col 15 --><td th:text="${hold.branchName}" class = branchName></td>
+      <!-- col 16 --><td th:text="${hold.pcode2}" class = pcode2></td>
+    </tr>
+    </tbody>
+
+  </table>
+</div>
+</div>
+<!-- end container -->
+
+<!-- Footer -->
+<br><br>
+<footer class="py-5">
+  <div class="container">
+    <p class="m-0 text-center">CSUMB CST 499 Capstone Project Copyright &copy; 2020 Gonzalez, Houser, Pettit</p>
+    <p class="m-0 text-center"><b>Disclaimer:</b> The information on this webpage is fictitious. It is used for academic purposes only.</p>
+  </div>
+</footer>
+
+<script th:inline = "javascript" type="text/javascript">
+
+  // holder for token and newHoldID variables so we can use it everywhere
+  var token;
+  var newHoldID;
+
+  $(document).ready(function(){
+
+    //Bootstrap DataTable Configuration Information
+    //Datatables documentation available at https://datatables.net/
+    $('#hold-table').DataTable({
+      //responsive enables the collapsed item view documentation: https://datatables.net/extensions/responsive/
+      "responsive": true,
+
+      //enable the searchPanes function and assign the 'filter by branch' label to the button
+      //https://datatables.net/extensions/searchpanes/
+      "language":{'searchPanes': {'collapse':{0: 'Filter by Branch', '_': 'Filter by Branch (%d)'}}},
+
+      //present datatables searchPanes through a button
+      //documentation: https://datatables.net/extensions/searchpanes/examples/initialisation/bs3Button.html
+      "buttons":[{extend:'searchPanes', config:{cascadePanes:true}}],
+      "dom": 'Bfrtip',
+
+      //stateSave: will save the state of the criteria selected in the searchPane in the browsers cache
+      //documenation:https://datatables.net/reference/option/stateSave
+      "stateSave": true,
+
+      // searchPanes:{columns:[15,16]},
+
+      "columnDefs": [
+        //searchpanes configuration documenation:https://datatables.net/extensions/searchpanes/
+        //show these columns as a searchpane
+        {"searchPanes": {"show": true}, "targets": [15,16]},
+
+        //do not show these columns as a searchpane
+        {"searchPanes": {"show": false}, "targets": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]},
+
+        //default sort order for the table 0 = locationName, 1 = callNumber, 2 = title
+        {"orderData": [0,1,2], "targets": 0},
+
+        //disable the sort arrows in the column header for column 11 = status
+        {"orderable": false, "targets": 11},  //removes the sort arrows from the status button column
+
+        //datatables responsive feature configuration
+        //documentation https://datatables.net/extensions/responsive/
+        //set the priority of the status/buttons column to 1, this prevents the column from being hidden
+        {"responsivePriority": 1, "targets":  11},
+
+        //set the priority of the other key columns to 2 to keep them visible
+        {"responsivePriority": 2, "targets" : [0,1,2,9]},
+
+        //datatables search box configuration for most columns documentation:https://datatables.net/reference/api/search()
+        //disable search for columns 3-13
+        {"targets":[3], "visible": true, "searchable": false},
+        {"targets":[4], "visible": true, "searchable": false},
+        {"targets":[5], "visible": true, "searchable": false},
+        {"targets":[6], "visible": true, "searchable": false},
+        {"targets":[7], "visible": true, "searchable": false},
+        {"targets":[8], "visible": true, "searchable": false},
+        {"targets":[9], "visible": true, "searchable": false},
+        {"targets":[11], "visible": true, "searchable": false},
+        {"targets":[12], "visible": true, "searchable": false},
+        {"targets":[13], "visible": true, "searchable": false},
+        {"targets":[14], "visible": true, "searchable": false},
+        // {"targets":[15], "visible": true, "searchable": false},
+        // {"targets":[16], "visible": true, "searchable": false},
+
+        //make the button column and the hold type columns wide enough to be visible
+        {"width": "25%", "targets": 11},
+        {"width": "15%", "targets": 10},
+      ]
+    });
+
+    // this will reset all buttons in a group to white background
+    $('#hold-table').on('click', '.btn', function(){
+
+      let buttonText = document.getElementById("onhold");
+
+      $(this).siblings('.btn').css("background-color", "white"); //sets the selected button to white when another button is clicked
+      $(this).siblings('.btn').css("color", "black");
+      $(this).siblings('.btn').css("fontWeight", "normal");
+
+      buttonText.innerHTML = "Pick Item";
+
+    });
+
+    // when clicking the NOS button, flags background grey and also sets
+    // item status to missing with ajax call
+    $('#hold-table').on('click', '.NOS', function(){
+
+      let holdType = $(this).closest('td').siblings('td.holdType').text();
+      let bib = $(this).closest('td').siblings('td.birlBib').text();
+      let item = $(this).closest('td').siblings('td.itemID').text();
+      let location = $(this).closest('td').siblings('td.fillLocation').text();
+
+      // color grey and set status M for missing
+      this.style.backgroundColor="grey";
+      this.style.color = "white";
+      this.style.fontWeight = "bold";
+
+      console.log($(this).closest('td').siblings('td.birlBib').text()); //bib for query
+      console.log($(this).closest('td').siblings('td.holdType').text());
+
+      let currentRow = $(this).closest("tr");
+      let data = $('#hold-table').DataTable().row(currentRow).data();
+
+      // console data printing for debugging
+      console.log("Not on shelf");
+      console.log($(this).closest('td').siblings('td.title').text());
+
+      // if it is a bib hold and stuff is missing, we need to flag all that are showing on shelf
+      if(holdType =="bib"){
+        // holding URL for API usage taken from Sierra API docs
+        let updateURL = "/api/NOS";
+
+        $.ajax({
+          method: "get",
+          url: updateURL,
+          data: {"bib": bib,
+                 "location": location},
+          contentType: "application/json; charset=ytf-8",
+          success: function (data) {
+            getToken();
+            console.log(data);
+            for (i=0; i<data.length; i++) {
+              updateItemStatus(token, data[i].recordNum, "m");
+            }
+          }
+        });
+      }
+
+      // if it is an item hold, we just look for the missing specific item
+      if(holdType =="item"){
+        // holding URL for API usage taken from Sierra API docs
+        let updateURL = "/api/itemNOS";
+
+        $.ajax({
+          method: "get",
+          url: updateURL,
+          data: {"bib": item},
+          contentType: "application/json; charset=ytf-8",
+          success: function (data) {
+            getToken();
+            console.log(data);
+            updateItemStatus(token, data.recordNum, "m");
+          }
+        });
+      }
+    });
+
+    // when clicking the onhold button, flags background blue
+    // hold status set back to 0 as the default status
+    $('#hold-table').on('click', '.onhold', function(){
+
+      let targetButton = event.target;
+
+      let bib = $(targetButton).closest('td').siblings('td.birlBib').text();
+      console.log("bib = " + bib);
+      let item = $(targetButton).closest('td').siblings('td.itemID').text();
+      let holdType = $(targetButton).closest('td').siblings('td.holdType').text();
+      let holdID = $(targetButton).closest('td').siblings('td.holdID').text();
+      let patronID = $(targetButton).closest('td').siblings('td.patronID').text();
+
+      var barcode = prompt("Scan the item Barcode");
+      buttonText = document.getElementsByClassName("onhold");
+
+      //check for valid barcode entry
+      if (barcode == null || barcode == "" || barcode.length > 16 || barcode.length < 9){
+        alert("Invalid Barcode Entered");
+        this.style.backgroundColor="red";
+        this.style.color = "white";
+        this.style.fontWeight = "bold";
+        targetButton.innerHTML= "Invalid Barcode"
+      }
+
+      // first check if it is an item hold and we have an item match
+      else if (holdType == "item")
+      {
+        //ajax call to get barcode's item and item_view.record_num for item status update
+        $.ajax({
+          method: "post",
+          url: "/api/barcodeItemSearch",
+          data: barcode,
+          contentType: "application/json; charset=ytf-8",
+          success: function (data, textStatus, jqXHR) {
+
+            // for debugging purposes
+            console.log(data.item);
+            console.log(data.recordNum);
+
+            let recordNum = data.recordNum;
+
+            // if the item matches, make the updates
+            //if the barcode is good and if the type matches, then complete the hold
+            if (data.item == item) {
+
+              getToken();
+
+              console.log("it worked");
+              targetButton.style.backgroundColor = "#10d16c";
+              targetButton.style.color = "white";
+              targetButton.style.fontWeight = "bold";
+              targetButton.innerHTML = "ON CART";
+
+              // restAPI call to update item status
+              // if pickup location = fill location, status = !
+              let pickupLocation = $(targetButton).closest('td').siblings(
+                  'td.pickupLocation').text();
+              let fillLocation = $(targetButton).closest('td').siblings('td.fillLocation').text();
+              let status = "";
+              if (pickupLocation == fillLocation) {
+                status = "!";
+              }
+              // else in transit, status = t
+              else {
+                status = "t";
+              }
+
+              console.log(pickupLocation);
+              console.log(fillLocation);
+              console.log(status);
+              checkIn(barcode);
+              // getNewHold(patronID);
+              // console.log(newHoldID);
+              updateItemVarfield(token, recordNum, holdID);
+
+            }
+            // else code to mismatch
+            else {
+              console.log("mismatch");
+              targetButton.style.backgroundColor = "red";
+              targetButton.style.color = "white";
+              targetButton.style.fontWeight = "bold";
+              targetButton.innerHTML = "Bib ID mismatch";
+            }
+          },
+          error: function(jqXHR, exception) {
+            console.log(jqXHR.status);
+            targetButton.style.backgroundColor = "red";
+            targetButton.style.color = "white";
+            targetButton.style.fontWeight = "bold";
+            targetButton.innerHTML = "Invalid Barcode";
+          }
+        });
+      }
+
+      // else it is a bib hold
+      else {
+        //ajax call to get barcode's bib and item_view.record_num for item status update
+        $.ajax({
+          method: "post",
+          url: "/api/barcodeSearch",
+          data: barcode,
+          contentType: "application/json; charset=ytf-8",
+          success: function (data) {
+
+            // for debugging purposes
+            console.log(data.bib);
+            console.log(data.recordNum);
+
+            let recordNum = data.recordNum;
+
+            // if the bib matches, make the updates
+            //if the barcode is good and if the type matches, then complete the hold
+            if (data.bib == bib) {
+
+              getToken();
+
+              console.log("it worked");
+              targetButton.style.backgroundColor = "#10d16c";
+              targetButton.style.color = "white";
+              targetButton.style.fontWeight = "bold";
+              targetButton.innerHTML = "ON CART";
+
+              // restAPI call to update item status
+              // if pickup location = fill location, status = !
+              let pickupLocation = $(targetButton).closest('td').siblings(
+                  'td.pickupLocation').text();
+              let fillLocation = $(targetButton).closest('td').siblings('td.fillLocation').text();
+              let status = "";
+              if (pickupLocation == fillLocation || pickupLocation == "d") {
+                status = "!";
+              }
+              // else in transit, status = t
+              else {
+                status = "t";
+              }
+
+              console.log(pickupLocation);
+              console.log(fillLocation);
+              console.log(status);
+              checkIn(barcode);
+              // getNewHold(patronID);
+              // console.log(newHoldID);
+              updateItemVarfield(token, recordNum, holdID);
+
+            }
+            // else code to mismatch
+            else {
+              console.log("mismatch");
+              targetButton.style.backgroundColor = "red";
+              targetButton.style.color = "white";
+              targetButton.style.fontWeight = "bold";
+              targetButton.innerHTML = "Bib ID mismatch";
+            }
+          },
+          error: function(jqXHR, exception) {
+            console.log(jqXHR.status);
+            targetButton.style.backgroundColor = "red";
+            targetButton.style.color = "white";
+            targetButton.style.fontWeight = "bold";
+            targetButton.innerHTML = "Invalid Barcode";
+          }
+        });
+      }
+    });
+
+
+  });
+
+  function getToken() {
+    // generate a token for API update
+    $.ajax({
+      method: "post",
+      url: "/token",
+      async: false,
+      success: function (data) {
+        console.log("access token is " + data);
+        token = data;
+      }
+    });
+  }
+
+  function updateItemStatus(token, recordNum, itemStatus) {
+    console.log("updateItemStatus call");
+    console.log(token);
+    console.log(recordNum);
+    console.log(itemStatus);
+    $.ajax({
+      method: "get",
+      url: "/updateItemStatus",
+      data: {
+        "token":token,
+        "recordNum":recordNum,
+        "status":itemStatus},
+      contentType: "application/json; charset=ytf-8",
+    });
+  }
+
+  function updateItemVarfield(token, recordNum, holdID) {
+    console.log("updateItemVarfield call");
+    console.log(token);
+    console.log(recordNum);
+    console.log(holdID);
+    $.ajax({
+      method: "get",
+      url: "/updateItemVarfield",
+      async: false,
+      data: {
+        "token":token,
+        "recordNum":recordNum,
+        "holdID":holdID},
+      contentType: "application/json; charset=ytf-8",
+    });
+  }
+
+  function getNewHold(patron) {
+    $.ajax({
+      method: "post",
+      url: "/api/getNewHold",
+      async: false,
+      data: patron,
+      contentType: "application/json; charset=ytf-8",
+      success: function (data) {
+        console.log("newHoldID " + data);
+        newHoldID = data;
+      }
+    });
+  }
+
+  function checkIn(itemBarcode, fillLocation){
+    $.ajax({
+      method: "post",
+      url: "/api/checkIn",
+      async: false,
+      data: JSON.stringify({
+        "itemBarcode":itemBarcode,
+        "fillLocation":fillLocation
+      }),
+      contentType: "application/json; charset=ytf-8",
+      success: function (data) {
+
+        // for debugging purposes
+        console.log(data.item);
+        console.log(data.recordNum);
+
+      }
+    });
+  }
+
+</script>
+
+</body>
+</html>
